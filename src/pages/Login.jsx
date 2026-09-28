@@ -1,37 +1,41 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { loginUser } from "../services/auth";
+import { loginUser, getCurrentUser } from "../services/auth";
+import { useAuth } from "../context/AuthContext";
 
 function Login() {
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    setError("");
+  e.preventDefault();
 
-    if (!email.trim() || !password) {
-      setError("Please enter your email and password.");
-      return;
-    }
+  if (!email.trim() || !password) {
+    setError("Please enter your email and password.");
+    return;
+  }
 
-    setLoading(true);
+  setLoading(true);
+  setError("");
 
-    try {
-      await loginUser(email.trim(), password);
+  try {
+    await loginUser(email.trim(), password);
 
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.message || "Login failed.");
-    } finally {
-      setLoading(false);
-    }
-  };
+    const currentUser = await getCurrentUser();
+    setUser(currentUser);
+
+    navigate("/dashboard");
+  } catch (error) {
+    setError(error.message || "Login failed.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4 py-8">

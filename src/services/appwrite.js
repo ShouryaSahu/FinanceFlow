@@ -1,4 +1,4 @@
-import { Client, Account, Databases } from "appwrite";
+import { Client, Account, TablesDB } from "appwrite";
 
 // Creating appwrite client object
 const client = new Client()
@@ -8,7 +8,7 @@ const client = new Client()
 // Create an account service using the initialized client
 export const account = new Account(client);
 
-// Create a databases service using the initialized client
-export const databases = new Databases(client);
+// Create a tables service using the initialized client
+export const tablesDB = new TablesDB(client);
 
 export default client;
